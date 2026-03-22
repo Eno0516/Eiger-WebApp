@@ -1,0 +1,68 @@
+{
+  "name": "Eiger WebApp",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+
+  // ── Port forwarding ────────────────────────────────────────────────────────
+  "forwardPorts": [
+    8080,   // backend
+    5173,   // frontend user
+    5174,   // frontend admin
+    5432,   // postgres
+    5050    // pgadmin
+  ],
+  "portsAttributes": {
+    "8080": { "label": "Backend API" },
+    "5173": { "label": "Frontend User" },
+    "5174": { "label": "Frontend Admin" },
+    "5432": { "label": "PostgreSQL" },
+    "5050": { "label": "pgAdmin" }
+  },
+
+  // ── Post-create setup ──────────────────────────────────────────────────────
+  "postCreateCommand": "bash .devcontainer/postCreate.sh",
+
+  // ── VS Code ────────────────────────────────────────────────────────────────
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        // Go
+        "golang.go",
+        // TypeScript / React
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        // Docker
+        "ms-azuretools.vscode-docker",
+        // Git / GitHub
+        "github.vscode-pull-request-github",
+        "eamodio.gitlens",
+        // Utilities
+        "EditorConfig.EditorConfig",
+        "streetsidesoftware.code-spell-checker"
+      ],
+      "settings": {
+        "go.toolsManagement.checkForUpdates": "local",
+        "go.useLanguageServer": true,
+        "[go]": {
+          "editor.formatOnSave": true,
+          "editor.defaultFormatter": "golang.go"
+        },
+        "[typescript]": {
+          "editor.formatOnSave": true,
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[typescriptreact]": {
+          "editor.formatOnSave": true,
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "editor.codeActionsOnSave": {
+          "source.fixAll.eslint": "explicit"
+        }
+      }
+    }
+  },
+
+  // ── Run as non-root ────────────────────────────────────────────────────────
+  "remoteUser": "vscode"
+}

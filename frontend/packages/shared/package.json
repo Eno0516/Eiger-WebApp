@@ -1,0 +1,14 @@
+{
+  "name": "@eiger/shared",
+  "version": "0.0.1",
+  "private": true,
+  "exports": {
+    "./api":        "./src/api/index.ts",
+    "./types":      "./src/types/index.ts",
+    "./components": "./src/components/index.ts",
+    "./hooks":      "./src/hooks/index.ts"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /c/Users/enoro/Eiger-WebApp -maxdepth 3 -not -path */.git/*)"
+    ]
+  }
+}
