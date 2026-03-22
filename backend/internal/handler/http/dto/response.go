@@ -27,3 +27,11 @@ func UserFromEntity(u *entity.User) UserResponse {
 type ErrorResponse struct {
 	Error string `json:"error"`
 }
+
+type LoginResponse struct {
+	Token string `json:"token"`
+}
+
+type MessageResponse struct {
+	Message string `json:"message"`
+}

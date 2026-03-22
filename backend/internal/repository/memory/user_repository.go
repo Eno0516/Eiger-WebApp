@@ -58,6 +58,27 @@ func (r *UserRepository) FindByEmail(ctx context.Context, email string) (*entity
 	return nil, apperrors.ErrNotFound
 }
 
+// FindByVerificationToken はメール認証トークンからユーザーを検索する（テスト用）。
+func (r *UserRepository) FindByVerificationToken(ctx context.Context, token string) (*entity.User, error) {
+	// TODO: store を走査して EmailVerificationToken が一致するユーザーを返す
+	// TODO: EmailVerificationExpiresAt が過去なら apperrors.ErrNotFound を返す
+	panic("not implemented")
+}
+
+// FindByResetToken はパスワードリセットトークンからユーザーを検索する（テスト用）。
+func (r *UserRepository) FindByResetToken(ctx context.Context, token string) (*entity.User, error) {
+	// TODO: store を走査して PasswordResetToken が一致するユーザーを返す
+	// TODO: PasswordResetExpiresAt が過去なら apperrors.ErrNotFound を返す
+	panic("not implemented")
+}
+
+// UpdateRole は指定ユーザーのロールを更新する（テスト用）。
+func (r *UserRepository) UpdateRole(ctx context.Context, id string, role entity.UserRole) error {
+	// TODO: store から id で取得し Role を更新する
+	// TODO: 存在しない場合は apperrors.ErrNotFound を返す
+	panic("not implemented")
+}
+
 func (r *UserRepository) FindAll(ctx context.Context) ([]*entity.User, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
