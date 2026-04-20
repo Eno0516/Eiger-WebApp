@@ -3,6 +3,9 @@
     "allow": [
       "Bash(npm install:*)",
       "Bash(go build:*)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\enoro\\Eiger-WebApp\\document\\api\\paths\\auth"
     ]
   }
 }
