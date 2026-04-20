@@ -1,0 +1,11 @@
+# Redocly CLI 設定
+# ドキュメント: https://redocly.com/docs/cli/
+apis:
+  main:
+    root: openapi.yaml
+
+# bundle コマンドで単一 YAML に結合する:
+#   npx @redocly/cli bundle openapi.yaml -o dist/openapi.yaml
+#
+# lint コマンドで仕様を検証する:
+#   npx @redocly/cli lint openapi.yaml
