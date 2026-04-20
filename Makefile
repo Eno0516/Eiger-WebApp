@@ -81,6 +81,7 @@ docker-logs:
 
 # ── Setup ────────────────────────────────────────────────────────────────────
 setup:
+	cd $(BACKEND_DIR) && sqlc generate
 	cd $(BACKEND_DIR) && $(GO) mod tidy && $(GO) mod download
 	cd $(FRONTEND_DIR) && npm install
 
