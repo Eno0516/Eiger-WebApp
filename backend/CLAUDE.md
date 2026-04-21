@@ -47,8 +47,8 @@ HTTP ステータスコードの決定は **usecase 層** で行い、**handler 
 
 ```go
 var (
-    ErrUserDisplayNameRequired = errors.New("display name is required")
-    ErrUserGoogleIDRequired    = errors.New("google id is required")
+    ErrUserDisplayNameRequired  = errors.New("display name is required")
+    ErrUserLineUserIDRequired   = errors.New("line user id is required")
 )
 ```
 
