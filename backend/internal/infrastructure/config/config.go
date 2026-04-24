@@ -5,10 +5,12 @@ import (
 )
 
 type Config struct {
-	Env         string `mapstructure:"ENV"`
-	Port        string `mapstructure:"PORT"`
-	DatabaseURL string `mapstructure:"DATABASE_URL"`
-	LogLevel    string `mapstructure:"LOG_LEVEL"`
+	Env           string `mapstructure:"ENV"`
+	Port          string `mapstructure:"PORT"`
+	DatabaseURL   string `mapstructure:"DATABASE_URL"`
+	LogLevel      string `mapstructure:"LOG_LEVEL"`
+	LineChannelID string `mapstructure:"LINE_CHANNEL_ID"`
+	JWTSecretKey  string `mapstructure:"JWT_SECRET_KEY"`
 }
 
 func Load() (*Config, error) {
