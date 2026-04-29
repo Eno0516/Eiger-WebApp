@@ -7,8 +7,12 @@ import (
 	"time"
 
 	"github.com/enoro/eiger-webapp/backend/internal/domain/entity"
+	domainrepo "github.com/enoro/eiger-webapp/backend/internal/domain/repository"
 	"github.com/enoro/eiger-webapp/backend/pkg/apperrors"
 )
+
+// Compile-time check: UserRepository は domain の UserRepository interface を満たす
+var _ domainrepo.UserRepository = (*UserRepository)(nil)
 
 type UserRepository struct {
 	mu    sync.RWMutex
@@ -22,19 +26,6 @@ func NewUserRepository() *UserRepository {
 	}
 }
 
-func (r *UserRepository) Create(ctx context.Context, user *entity.User) error {
-	r.mu.Lock()
-	defer r.mu.Unlock()
-
-	r.seq++
-	user.ID = fmt.Sprintf("%d", r.seq)
-	now := time.Now()
-	user.CreatedAt = now
-	user.UpdatedAt = now
-	r.store[user.ID] = user
-	return nil
-}
-
 func (r *UserRepository) FindByID(ctx context.Context, id string) (*entity.User, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
@@ -46,37 +37,16 @@ func (r *UserRepository) FindByID(ctx context.Context, id string) (*entity.User,
 	return user, nil
 }
 
-func (r *UserRepository) FindByEmail(ctx context.Context, email string) (*entity.User, error) {
+func (r *UserRepository) FindByLineUserID(ctx context.Context, lineUserID string) (*entity.User, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
 
 	for _, u := range r.store {
-		if u.Email == email {
+		if u.LineUserID == lineUserID {
 			return u, nil
 		}
 	}
 	return nil, apperrors.ErrNotFound
-}
-
-// FindByVerificationToken はメール認証トークンからユーザーを検索する（テスト用）。
-func (r *UserRepository) FindByVerificationToken(ctx context.Context, token string) (*entity.User, error) {
-	// TODO: store を走査して EmailVerificationToken が一致するユーザーを返す
-	// TODO: EmailVerificationExpiresAt が過去なら apperrors.ErrNotFound を返す
-	panic("not implemented")
-}
-
-// FindByResetToken はパスワードリセットトークンからユーザーを検索する（テスト用）。
-func (r *UserRepository) FindByResetToken(ctx context.Context, token string) (*entity.User, error) {
-	// TODO: store を走査して PasswordResetToken が一致するユーザーを返す
-	// TODO: PasswordResetExpiresAt が過去なら apperrors.ErrNotFound を返す
-	panic("not implemented")
-}
-
-// UpdateRole は指定ユーザーのロールを更新する（テスト用）。
-func (r *UserRepository) UpdateRole(ctx context.Context, id string, role entity.UserRole) error {
-	// TODO: store から id で取得し Role を更新する
-	// TODO: 存在しない場合は apperrors.ErrNotFound を返す
-	panic("not implemented")
 }
 
 func (r *UserRepository) FindAll(ctx context.Context) ([]*entity.User, error) {
@@ -90,16 +60,34 @@ func (r *UserRepository) FindAll(ctx context.Context) ([]*entity.User, error) {
 	return users, nil
 }
 
-func (r *UserRepository) Update(ctx context.Context, user *entity.User) error {
+func (r *UserRepository) Create(ctx context.Context, user *entity.User) (*entity.User, error) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	for _, u := range r.store {
+		if u.LineUserID == user.LineUserID {
+			return nil, apperrors.ErrConflict
+		}
+	}
+	r.seq++
+	user.ID = fmt.Sprintf("%d", r.seq)
+	now := time.Now()
+	user.CreatedAt = now
+	user.UpdatedAt = now
+	r.store[user.ID] = user
+	return user, nil
+}
+
+func (r *UserRepository) Update(ctx context.Context, user *entity.User) (*entity.User, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
 	if _, ok := r.store[user.ID]; !ok {
-		return apperrors.ErrNotFound
+		return nil, apperrors.ErrNotFound
 	}
 	user.UpdatedAt = time.Now()
 	r.store[user.ID] = user
-	return nil
+	return user, nil
 }
 
 func (r *UserRepository) Delete(ctx context.Context, id string) error {

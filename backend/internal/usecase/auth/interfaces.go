@@ -1,18 +1,18 @@
 package auth
 
-import (
-	"context"
+import "context"
 
-	"github.com/enoro/eiger-webapp/backend/internal/domain/entity"
-)
-
-// EmailSender はメール送信の抽象。infrastructure/email で実装する。
-type EmailSender interface {
-	SendVerificationEmail(ctx context.Context, toEmail, token string) error
-	SendPasswordResetEmail(ctx context.Context, toEmail, token string) error
+// LINEIDTokenVerifier は LINE ID トークンの検証抽象。
+// pkg/lineauth で実装する。
+type LINEIDTokenVerifier interface {
+	// Verify は ID トークンを検証して LineUserID（sub クレーム）を返す。
+	// トークンが無効の場合はエラーを返す。
+	Verify(ctx context.Context, idToken string) (lineUserID string, err error)
 }
 
-// JWTGenerator は JWT 生成・検証の抽象。pkg/jwt で実装する。
+// JWTGenerator は JWT 生成の抽象。
+// pkg/jwt で実装する。
 type JWTGenerator interface {
-	Generate(userID, email string, role entity.UserRole) (string, error)
+	Generate(userID string, isSystemAdmin bool) (string, error)
 }
+
