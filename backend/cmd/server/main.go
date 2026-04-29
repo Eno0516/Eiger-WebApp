@@ -15,8 +15,14 @@ import (
 	"github.com/enoro/eiger-webapp/backend/internal/infrastructure/logger"
 
 	httphandler "github.com/enoro/eiger-webapp/backend/internal/handler/http"
+	memrepo "github.com/enoro/eiger-webapp/backend/internal/repository/memory"
 	"github.com/enoro/eiger-webapp/backend/internal/repository/postgres"
-	"github.com/enoro/eiger-webapp/backend/internal/usecase/user"
+	authuc "github.com/enoro/eiger-webapp/backend/internal/usecase/auth"
+	circleuc "github.com/enoro/eiger-webapp/backend/internal/usecase/circle"
+	eventuc "github.com/enoro/eiger-webapp/backend/internal/usecase/event"
+	useruс "github.com/enoro/eiger-webapp/backend/internal/usecase/user"
+	jwtpkg "github.com/enoro/eiger-webapp/backend/pkg/jwt"
+	"github.com/enoro/eiger-webapp/backend/pkg/lineauth"
 )
 
 func main() {
@@ -47,16 +53,67 @@ func run() error {
 
 	// ── Repositories ─────────────────────────────────────────────────────────
 	userRepo := postgres.NewUserRepository(db)
+	userProfileRepo := postgres.NewUserProfileRepository(db)
+
+	// Circle / Event リポジトリはまだ postgres 実装がないため memory を使用
+	// TODO: postgres 実装が揃い次第差し替える
+	circleRepo := memrepo.NewCircleRepository()
+	circleMemberRepo := memrepo.NewCircleMemberRepository()
+	eventRepo := memrepo.NewEventRepository()
+	eventParticipantRepo := memrepo.NewEventParticipantRepository()
+
+	// ── Infrastructure ───────────────────────────────────────────────────────
+	// TODO: cfg に LINE_CHANNEL_ID / JWT_SECRET_KEY / GOOGLE_SERVICE_ACCOUNT / SIGNUP_SPREADSHEET_ID を追加する
+	lineVerifier := lineauth.NewVerifier(cfg.LineChannelID)
+	jwtGen := jwtpkg.NewGenerator(cfg.JWTSecretKey, 0)
+	// TODO: Copilot - sheets.NewSignUpWriter(credentialsJSON, cfg.SignupSpreadsheetID, "Sheet1") で初期化する
+	// TODO: Copilot - credentialsJSON は cfg.GoogleServiceAccount を base64 デコードして使う
+	// TODO: Copilot - エラー時は return fmt.Errorf("init sheets writer: %w", err)
 
 	// ── Use Cases ────────────────────────────────────────────────────────────
-	createUserUC := user.NewCreateUserUseCase(userRepo)
-	getUserUC := user.NewGetUserUseCase(userRepo)
+	lineAuthUC := authuc.NewLineAuthUseCase(userRepo, lineVerifier, jwtGen, log)
+	registerUC := authuc.NewRegisterUseCase(userRepo, userProfileRepo, log)
+	createUserUC := useruс.NewCreateUserUseCase(userRepo, userProfileRepo)
+	getUserUC := useruс.NewGetUserUseCase(userRepo)
+
+	// Circle use cases
+	createCircleUC := circleuc.NewCreateCircleUseCase(circleRepo)
+	listCirclesUC := circleuc.NewListCirclesUseCase(circleRepo, circleMemberRepo)
+	deleteCircleUC := circleuc.NewDeleteCircleUseCase(circleRepo)
+	getCircleMembersUC := circleuc.NewGetCircleMembersUseCase(circleMemberRepo)
+	applyCircleUC := circleuc.NewApplyCircleUseCase(circleRepo, circleMemberRepo)
+	updateMemberRoleUC := authuc.NewUpdateCircleMemberRoleUseCase(circleMemberRepo)
+
+	// Event use cases
+	createEventUC := eventuc.NewCreateEventUseCase(eventRepo)
+	listEventsUC := eventuc.NewListEventsUseCase(eventRepo)
+	applyEventUC := eventuc.NewApplyEventUseCase(eventParticipantRepo)
+	updateParticipantStatusUC := eventuc.NewUpdateParticipantStatusUseCase(eventParticipantRepo)
+	bulkUpdateParticipantsUC := eventuc.NewBulkUpdateParticipantsUseCase(eventParticipantRepo)
+	confirmEventUC := eventuc.NewConfirmEventUseCase(eventRepo, eventParticipantRepo)
 
 	// ── Handlers ─────────────────────────────────────────────────────────────
+	authHandler := httphandler.NewAuthHandler(lineAuthUC, registerUC, log)
 	userHandler := httphandler.NewUserHandler(createUserUC, getUserUC, log)
+	adminHandler := httphandler.NewAdminHandler(
+		createCircleUC, listCirclesUC, deleteCircleUC,
+		getCircleMembersUC, updateMemberRoleUC, circleRepo, log,
+	)
+	circleHandler := httphandler.NewCircleHandler(
+		applyCircleUC, updateMemberRoleUC,
+		listCirclesUC, getCircleMembersUC, log,
+	)
+	eventHandler := httphandler.NewEventHandler(
+		createEventUC, listEventsUC, applyEventUC,
+		updateParticipantStatusUC, bulkUpdateParticipantsUC, confirmEventUC,
+		eventParticipantRepo, log,
+	)
 
 	// ── Router ───────────────────────────────────────────────────────────────
-	router := httphandler.NewRouter(userHandler, log)
+	router := httphandler.NewRouter(
+		userHandler, authHandler, adminHandler, circleHandler, eventHandler,
+		circleMemberRepo, jwtGen, log,
+	)
 
 	// ── Server ───────────────────────────────────────────────────────────────
 	srv := &http.Server{
