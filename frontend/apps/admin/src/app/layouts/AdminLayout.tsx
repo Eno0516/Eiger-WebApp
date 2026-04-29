@@ -8,7 +8,7 @@ export function AdminLayout() {
         <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
           <li>
             <NavLink
-              to="/users"
+              to="/admin/circles"
               style={({ isActive }) => ({
                 display: 'block',
                 padding: '0.5rem 0.75rem',
@@ -19,7 +19,7 @@ export function AdminLayout() {
                 fontSize: '0.875rem',
               })}
             >
-              ユーザー管理
+              サークル管理
             </NavLink>
           </li>
         </ul>
