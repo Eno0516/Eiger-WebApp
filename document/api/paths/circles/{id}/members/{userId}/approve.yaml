@@ -1,0 +1,49 @@
+post:
+  summary: メンバー承認（visitor → member）
+  operationId: approveMember
+  tags:
+    - circles
+  security:
+    - BearerAuth: []
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: サークルID
+    - name: userId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: 承認対象のユーザーID
+  responses:
+    "204":
+      description: 承認成功
+    "400":
+      description: 対象ユーザーが visitor でない
+      content:
+        application/json:
+          schema:
+            $ref: "../../../../../components/schemas/Error.yaml"
+    "401":
+      description: 認証エラー
+      content:
+        application/json:
+          schema:
+            $ref: "../../../../../components/schemas/Error.yaml"
+    "403":
+      description: 権限エラー（circle_admin のみ）
+      content:
+        application/json:
+          schema:
+            $ref: "../../../../../components/schemas/Error.yaml"
+    "404":
+      description: メンバーが存在しない
+      content:
+        application/json:
+          schema:
+            $ref: "../../../../../components/schemas/Error.yaml"

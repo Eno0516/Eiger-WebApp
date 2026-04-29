@@ -1,0 +1,107 @@
+get:
+  summary: イベント一覧取得
+  operationId: listEvents
+  tags:
+    - events
+  security:
+    - BearerAuth: []
+  parameters:
+    - name: circleId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: サークルID
+  responses:
+    "200":
+      description: 取得成功
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../../../../../components/schemas/Event.yaml"
+    "401":
+      description: 認証エラー
+      content:
+        application/json:
+          schema:
+            $ref: "../../../../../components/schemas/Error.yaml"
+    "404":
+      description: サークルが存在しない
+      content:
+        application/json:
+          schema:
+            $ref: "../../../../../components/schemas/Error.yaml"
+
+post:
+  summary: イベント作成
+  operationId: createEvent
+  tags:
+    - events
+  security:
+    - BearerAuth: []
+  parameters:
+    - name: circleId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: サークルID
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required: [title, date, description, liff_url, line_group_url]
+          properties:
+            title:
+              type: string
+              example: "第3回練習試合"
+            date:
+              type: string
+              format: date-time
+              example: "2026-06-01T10:00:00Z"
+            description:
+              type: string
+              example: "場所：〇〇体育館"
+            form_id:
+              type: string
+              nullable: true
+              example: "1FAIpQLSe..."
+            liff_url:
+              type: string
+              format: uri
+              example: "https://liff.line.me/xxxxx"
+            line_group_url:
+              type: string
+              format: uri
+              example: "https://line.me/g2/xxxxx"
+  responses:
+    "201":
+      description: 作成成功
+      content:
+        application/json:
+          schema:
+            $ref: "../../../../../components/schemas/Event.yaml"
+    "400":
+      description: バリデーションエラー
+      content:
+        application/json:
+          schema:
+            $ref: "../../../../../components/schemas/Error.yaml"
+    "401":
+      description: 認証エラー
+      content:
+        application/json:
+          schema:
+            $ref: "../../../../../components/schemas/Error.yaml"
+    "403":
+      description: 権限エラー（circle_admin のみ）
+      content:
+        application/json:
+          schema:
+            $ref: "../../../../../components/schemas/Error.yaml"

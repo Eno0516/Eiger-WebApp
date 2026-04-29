@@ -1,0 +1,52 @@
+type: object
+properties:
+  id:
+    type: string
+    format: uuid
+    example: "01234567-89ab-cdef-0123-456789abcdef"
+  circle_id:
+    type: string
+    format: uuid
+    example: "01234567-89ab-cdef-0123-456789abcdef"
+  title:
+    type: string
+    example: "第3回練習試合"
+  date:
+    type: string
+    format: date-time
+    example: "2026-06-01T10:00:00Z"
+  description:
+    type: string
+    example: "場所：〇〇体育館"
+  form_id:
+    type: string
+    nullable: true
+    example: "1FAIpQLSe..."
+  liff_url:
+    type: string
+    format: uri
+    example: "https://liff.line.me/xxxxx"
+  line_group_url:
+    type: string
+    format: uri
+    example: "https://line.me/g2/xxxxx"
+  confirmed_at:
+    type: string
+    format: date-time
+    nullable: true
+  created_at:
+    type: string
+    format: date-time
+  updated_at:
+    type: string
+    format: date-time
+required:
+  - id
+  - circle_id
+  - title
+  - date
+  - description
+  - liff_url
+  - line_group_url
+  - created_at
+  - updated_at

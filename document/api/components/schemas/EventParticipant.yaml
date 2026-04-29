@@ -1,0 +1,26 @@
+type: object
+properties:
+  event_id:
+    type: string
+    format: uuid
+    example: "01234567-89ab-cdef-0123-456789abcdef"
+  user_id:
+    type: string
+    format: uuid
+    example: "01234567-89ab-cdef-0123-456789abcdef"
+  status:
+    type: string
+    enum: [applied, confirmed, rejected]
+    example: "applied"
+  created_at:
+    type: string
+    format: date-time
+  updated_at:
+    type: string
+    format: date-time
+required:
+  - event_id
+  - user_id
+  - status
+  - created_at
+  - updated_at

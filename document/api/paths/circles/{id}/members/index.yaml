@@ -1,0 +1,36 @@
+get:
+  summary: サークルメンバー一覧取得
+  operationId: getCircleMembers
+  tags:
+    - circles
+  security:
+    - BearerAuth: []
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: サークルID
+  responses:
+    "200":
+      description: 取得成功
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../../../../components/schemas/CircleMember.yaml"
+    "401":
+      description: 認証エラー
+      content:
+        application/json:
+          schema:
+            $ref: "../../../../components/schemas/Error.yaml"
+    "404":
+      description: サークルが存在しない
+      content:
+        application/json:
+          schema:
+            $ref: "../../../../components/schemas/Error.yaml"

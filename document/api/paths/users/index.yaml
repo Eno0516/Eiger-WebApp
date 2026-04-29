@@ -1,0 +1,64 @@
+get:
+  summary: ユーザー一覧取得
+  operationId: listUsers
+  tags:
+    - users
+  security:
+    - BearerAuth: []
+  responses:
+    "200":
+      description: 取得成功
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../../components/schemas/User.yaml"
+    "401":
+      description: 認証エラー
+      content:
+        application/json:
+          schema:
+            $ref: "../../components/schemas/Error.yaml"
+
+post:
+  summary: ユーザー作成
+  operationId: createUser
+  tags:
+    - users
+  security:
+    - BearerAuth: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required: [name, email]
+          properties:
+            name:
+              type: string
+              example: "山田太郎"
+            email:
+              type: string
+              format: email
+              example: "yamada@example.com"
+  responses:
+    "201":
+      description: 作成成功
+      content:
+        application/json:
+          schema:
+            $ref: "../../components/schemas/User.yaml"
+    "400":
+      description: バリデーションエラー
+      content:
+        application/json:
+          schema:
+            $ref: "../../components/schemas/Error.yaml"
+    "401":
+      description: 認証エラー
+      content:
+        application/json:
+          schema:
+            $ref: "../../components/schemas/Error.yaml"

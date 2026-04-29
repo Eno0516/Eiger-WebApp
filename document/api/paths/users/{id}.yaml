@@ -1,0 +1,34 @@
+get:
+  summary: ユーザー取得
+  operationId: getUserById
+  tags:
+    - users
+  security:
+    - BearerAuth: []
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: ユーザーID
+  responses:
+    "200":
+      description: 取得成功
+      content:
+        application/json:
+          schema:
+            $ref: "../../components/schemas/User.yaml"
+    "401":
+      description: 認証エラー
+      content:
+        application/json:
+          schema:
+            $ref: "../../components/schemas/Error.yaml"
+    "404":
+      description: ユーザーが存在しない
+      content:
+        application/json:
+          schema:
+            $ref: "../../components/schemas/Error.yaml"

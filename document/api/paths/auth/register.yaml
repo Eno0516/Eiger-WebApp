@@ -1,0 +1,36 @@
+post:
+  summary: ユーザー登録
+  operationId: register
+  tags:
+    - auth
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required: [name, email, password]
+          properties:
+            name:
+              type: string
+              example: "山田太郎"
+            email:
+              type: string
+              format: email
+              example: "yamada@example.com"
+            password:
+              type: string
+              minLength: 8
+  responses:
+    "201":
+      description: 登録成功（確認メール送信済み）
+      content:
+        application/json:
+          schema:
+            $ref: "../../components/schemas/MessageResponse.yaml"
+    "400":
+      description: バリデーションエラー
+      content:
+        application/json:
+          schema:
+            $ref: "../../components/schemas/Error.yaml"

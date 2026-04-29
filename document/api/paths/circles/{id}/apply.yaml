@@ -1,0 +1,36 @@
+post:
+  summary: サークルへの参加申請
+  operationId: applyCircle
+  tags:
+    - circles
+  security:
+    - BearerAuth: []
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: サークルID
+  responses:
+    "204":
+      description: 申請成功
+    "401":
+      description: 認証エラー
+      content:
+        application/json:
+          schema:
+            $ref: "../../../components/schemas/Error.yaml"
+    "404":
+      description: サークルが存在しない
+      content:
+        application/json:
+          schema:
+            $ref: "../../../components/schemas/Error.yaml"
+    "409":
+      description: 既に申請済み・メンバー
+      content:
+        application/json:
+          schema:
+            $ref: "../../../components/schemas/Error.yaml"

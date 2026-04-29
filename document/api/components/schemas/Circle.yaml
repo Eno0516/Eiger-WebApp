@@ -1,0 +1,33 @@
+type: object
+properties:
+  id:
+    type: string
+    format: uuid
+    example: "01234567-89ab-cdef-0123-456789abcdef"
+  name:
+    type: string
+    example: "バスケットボール部"
+  description:
+    type: string
+    example: "週2回活動しています"
+  application_form_url:
+    type: string
+    format: uri
+    example: "https://liff.line.me/xxxxx"
+  spreadsheet_id:
+    type: string
+    example: "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms"
+  created_at:
+    type: string
+    format: date-time
+  updated_at:
+    type: string
+    format: date-time
+required:
+  - id
+  - name
+  - description
+  - application_form_url
+  - spreadsheet_id
+  - created_at
+  - updated_at

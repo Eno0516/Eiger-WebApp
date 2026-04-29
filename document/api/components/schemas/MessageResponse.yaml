@@ -1,0 +1,7 @@
+type: object
+properties:
+  message:
+    type: string
+    example: "操作が完了しました"
+required:
+  - message

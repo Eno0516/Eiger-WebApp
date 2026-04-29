@@ -1,0 +1,55 @@
+patch:
+  summary: 参加者ステータス個別更新
+  operationId: updateParticipantStatus
+  tags:
+    - events
+  security:
+    - BearerAuth: []
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: イベントID
+    - name: userId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: ユーザーID
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required: [status]
+          properties:
+            status:
+              type: string
+              enum: [applied, confirmed, rejected]
+              example: "confirmed"
+  responses:
+    "204":
+      description: 更新成功
+    "400":
+      description: 無効なステータス
+      content:
+        application/json:
+          schema:
+            $ref: "../../../../components/schemas/Error.yaml"
+    "401":
+      description: 認証エラー
+      content:
+        application/json:
+          schema:
+            $ref: "../../../../components/schemas/Error.yaml"
+    "404":
+      description: 参加者が存在しない
+      content:
+        application/json:
+          schema:
+            $ref: "../../../../components/schemas/Error.yaml"

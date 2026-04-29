@@ -1,0 +1,58 @@
+patch:
+  summary: ユーザーロール更新（管理者専用）
+  operationId: updateUserRole
+  tags:
+    - admin
+  security:
+    - BearerAuth: []
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: 対象ユーザーID
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required: [role]
+          properties:
+            role:
+              type: string
+              enum: [pending, member, admin]
+              example: "member"
+  responses:
+    "200":
+      description: 更新成功
+      content:
+        application/json:
+          schema:
+            $ref: "../../../../components/schemas/MessageResponse.yaml"
+    "400":
+      description: バリデーションエラー
+      content:
+        application/json:
+          schema:
+            $ref: "../../../../components/schemas/Error.yaml"
+    "401":
+      description: 認証エラー
+      content:
+        application/json:
+          schema:
+            $ref: "../../../../components/schemas/Error.yaml"
+    "403":
+      description: 権限不足（admin ロール必須）
+      content:
+        application/json:
+          schema:
+            $ref: "../../../../components/schemas/Error.yaml"
+    "404":
+      description: ユーザーが存在しない
+      content:
+        application/json:
+          schema:
+            $ref: "../../../../components/schemas/Error.yaml"

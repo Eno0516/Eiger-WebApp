@@ -1,0 +1,25 @@
+type: object
+properties:
+  id:
+    type: string
+    format: uuid
+    example: "01234567-89ab-cdef-0123-456789abcdef"
+  name:
+    type: string
+    example: "山田太郎"
+  email:
+    type: string
+    format: email
+    example: "yamada@example.com"
+  created_at:
+    type: string
+    format: date-time
+  updated_at:
+    type: string
+    format: date-time
+required:
+  - id
+  - name
+  - email
+  - created_at
+  - updated_at

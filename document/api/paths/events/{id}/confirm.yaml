@@ -1,0 +1,42 @@
+post:
+  summary: イベント参加者確定
+  operationId: confirmEvent
+  tags:
+    - events
+  security:
+    - BearerAuth: []
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: イベントID
+  responses:
+    "204":
+      description: 確定成功
+    "401":
+      description: 認証エラー
+      content:
+        application/json:
+          schema:
+            $ref: "../../../components/schemas/Error.yaml"
+    "403":
+      description: 権限エラー（circle_admin のみ）
+      content:
+        application/json:
+          schema:
+            $ref: "../../../components/schemas/Error.yaml"
+    "404":
+      description: イベントが存在しない
+      content:
+        application/json:
+          schema:
+            $ref: "../../../components/schemas/Error.yaml"
+    "409":
+      description: 既に確定済み
+      content:
+        application/json:
+          schema:
+            $ref: "../../../components/schemas/Error.yaml"

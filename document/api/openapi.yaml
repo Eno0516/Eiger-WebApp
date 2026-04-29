@@ -1,0 +1,65 @@
+openapi: "3.0.3"
+info:
+  title: Eiger WebApp API
+  version: "1.0.0"
+  description: Eiger WebApp のバックエンド API 仕様
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: ローカル開発環境
+
+paths:
+  /auth/register:
+    $ref: "./paths/auth/register.yaml"
+  /auth/login:
+    $ref: "./paths/auth/login.yaml"
+  /users:
+    $ref: "./paths/users/index.yaml"
+  /users/{id}:
+    $ref: "./paths/users/{id}.yaml"
+  /admin/users/{id}/role:
+    $ref: "./paths/admin/users/{id}/role.yaml"
+  /circles:
+    $ref: "./paths/circles/index.yaml"
+  /circles/{id}:
+    $ref: "./paths/circles/{id}.yaml"
+  /circles/{id}/apply:
+    $ref: "./paths/circles/{id}/apply.yaml"
+  /circles/{id}/members:
+    $ref: "./paths/circles/{id}/members/index.yaml"
+  /circles/{id}/members/{userId}/approve:
+    $ref: "./paths/circles/{id}/members/{userId}/approve.yaml"
+  /circles/{circleId}/events:
+    $ref: "./paths/circles/{circleId}/events/index.yaml"
+  /events/{id}/apply:
+    $ref: "./paths/events/{id}/apply.yaml"
+  /events/{id}/confirm:
+    $ref: "./paths/events/{id}/confirm.yaml"
+  /events/{id}/participants:
+    $ref: "./paths/events/{id}/participants/index.yaml"
+  /events/{id}/participants/{userId}:
+    $ref: "./paths/events/{id}/participants/{userId}.yaml"
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    User:
+      $ref: "./components/schemas/User.yaml"
+    Error:
+      $ref: "./components/schemas/Error.yaml"
+    LoginResponse:
+      $ref: "./components/schemas/LoginResponse.yaml"
+    MessageResponse:
+      $ref: "./components/schemas/MessageResponse.yaml"
+    Circle:
+      $ref: "./components/schemas/Circle.yaml"
+    CircleMember:
+      $ref: "./components/schemas/CircleMember.yaml"
+    Event:
+      $ref: "./components/schemas/Event.yaml"
+    EventParticipant:
+      $ref: "./components/schemas/EventParticipant.yaml"

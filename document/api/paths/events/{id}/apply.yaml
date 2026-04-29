@@ -1,0 +1,36 @@
+post:
+  summary: イベントへの参加申請
+  operationId: applyEvent
+  tags:
+    - events
+  security:
+    - BearerAuth: []
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: イベントID
+  responses:
+    "204":
+      description: 申請成功
+    "401":
+      description: 認証エラー
+      content:
+        application/json:
+          schema:
+            $ref: "../../../components/schemas/Error.yaml"
+    "404":
+      description: イベントが存在しない
+      content:
+        application/json:
+          schema:
+            $ref: "../../../components/schemas/Error.yaml"
+    "409":
+      description: 既に申請済み
+      content:
+        application/json:
+          schema:
+            $ref: "../../../components/schemas/Error.yaml"

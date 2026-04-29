@@ -1,0 +1,76 @@
+get:
+  summary: サークル一覧取得
+  operationId: listCircles
+  tags:
+    - circles
+  security:
+    - BearerAuth: []
+  responses:
+    "200":
+      description: 取得成功
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../../components/schemas/Circle.yaml"
+    "401":
+      description: 認証エラー
+      content:
+        application/json:
+          schema:
+            $ref: "../../components/schemas/Error.yaml"
+
+post:
+  summary: サークル作成
+  operationId: createCircle
+  tags:
+    - circles
+  security:
+    - BearerAuth: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required: [name, description, application_form_url, spreadsheet_id]
+          properties:
+            name:
+              type: string
+              example: "バスケットボール部"
+            description:
+              type: string
+              example: "週2回活動しています"
+            application_form_url:
+              type: string
+              format: uri
+              example: "https://liff.line.me/xxxxx"
+            spreadsheet_id:
+              type: string
+              example: "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms"
+  responses:
+    "201":
+      description: 作成成功
+      content:
+        application/json:
+          schema:
+            $ref: "../../components/schemas/Circle.yaml"
+    "400":
+      description: バリデーションエラー
+      content:
+        application/json:
+          schema:
+            $ref: "../../components/schemas/Error.yaml"
+    "401":
+      description: 認証エラー
+      content:
+        application/json:
+          schema:
+            $ref: "../../components/schemas/Error.yaml"
+    "403":
+      description: 権限エラー（system_admin のみ）
+      content:
+        application/json:
+          schema:
+            $ref: "../../components/schemas/Error.yaml"

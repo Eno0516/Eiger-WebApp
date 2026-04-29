@@ -1,0 +1,36 @@
+delete:
+  summary: サークル削除
+  operationId: deleteCircle
+  tags:
+    - circles
+  security:
+    - BearerAuth: []
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: サークルID
+  responses:
+    "204":
+      description: 削除成功
+    "401":
+      description: 認証エラー
+      content:
+        application/json:
+          schema:
+            $ref: "../../components/schemas/Error.yaml"
+    "403":
+      description: 権限エラー（system_admin のみ）
+      content:
+        application/json:
+          schema:
+            $ref: "../../components/schemas/Error.yaml"
+    "404":
+      description: サークルが存在しない
+      content:
+        application/json:
+          schema:
+            $ref: "../../components/schemas/Error.yaml"

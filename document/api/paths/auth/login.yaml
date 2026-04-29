@@ -1,0 +1,38 @@
+post:
+  summary: ログイン
+  operationId: login
+  tags:
+    - auth
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required: [email, password]
+          properties:
+            email:
+              type: string
+              format: email
+              example: "yamada@example.com"
+            password:
+              type: string
+  responses:
+    "200":
+      description: ログイン成功
+      content:
+        application/json:
+          schema:
+            $ref: "../../components/schemas/LoginResponse.yaml"
+    "400":
+      description: バリデーションエラー
+      content:
+        application/json:
+          schema:
+            $ref: "../../components/schemas/Error.yaml"
+    "401":
+      description: 認証失敗（メールアドレスまたはパスワードが不正）
+      content:
+        application/json:
+          schema:
+            $ref: "../../components/schemas/Error.yaml"
