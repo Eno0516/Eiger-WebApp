@@ -15,36 +15,37 @@ import (
 func TestCreateUserUseCase_Execute(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		repo := memory.NewUserRepository()
-		uc := user.NewCreateUserUseCase(repo)
+		profileRepo := memory.NewUserProfileRepository()
+		uc := user.NewCreateUserUseCase(repo, profileRepo)
 
 		out, err := uc.Execute(context.Background(), user.CreateUserInput{
-			Name:  "Alice",
-			Email: "alice@example.com",
+			LineUserID: "line-user-abc",
 		})
 
 		require.NoError(t, err)
-		assert.Equal(t, "Alice", out.User.Name)
-		assert.Equal(t, "alice@example.com", out.User.Email)
+		assert.Equal(t, "line-user-abc", out.User.LineUserID)
 		assert.NotEmpty(t, out.User.ID)
+		assert.False(t, out.User.IsRegistered)
 	})
 
-	t.Run("validation error - missing name", func(t *testing.T) {
+	t.Run("validation error - missing line user id", func(t *testing.T) {
 		repo := memory.NewUserRepository()
-		uc := user.NewCreateUserUseCase(repo)
+		profileRepo := memory.NewUserProfileRepository()
+		uc := user.NewCreateUserUseCase(repo, profileRepo)
 
 		_, err := uc.Execute(context.Background(), user.CreateUserInput{
-			Name:  "",
-			Email: "alice@example.com",
+			LineUserID: "",
 		})
 
-		assert.ErrorContains(t, err, entity.ErrUserNameRequired.Error())
+		assert.ErrorContains(t, err, entity.ErrUserLineUserIDRequired.Error())
 	})
 
-	t.Run("conflict - duplicate email", func(t *testing.T) {
+	t.Run("conflict - duplicate line_user_id", func(t *testing.T) {
 		repo := memory.NewUserRepository()
-		uc := user.NewCreateUserUseCase(repo)
+		profileRepo := memory.NewUserProfileRepository()
+		uc := user.NewCreateUserUseCase(repo, profileRepo)
 
-		input := user.CreateUserInput{Name: "Alice", Email: "alice@example.com"}
+		input := user.CreateUserInput{LineUserID: "line-user-abc"}
 		_, err := uc.Execute(context.Background(), input)
 		require.NoError(t, err)
 
