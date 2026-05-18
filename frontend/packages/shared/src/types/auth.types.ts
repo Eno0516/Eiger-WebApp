@@ -1,23 +1,13 @@
-export type UserRole = 'pending' | 'member' | 'admin'
-
 export interface AuthUser {
   userId: string
-  email: string
-  role: UserRole
+  isSystemAdmin: boolean
 }
 
-export interface LoginPayload {
-  email: string
-  password: string
+export interface LineAuthPayload {
+  idToken: string // LINE が発行した ID トークン
 }
 
-export interface RegisterPayload {
-  name: string
-  email: string
-  password: string
-}
-
-export interface ResetPasswordPayload {
-  token: string
-  newPassword: string
+export interface AuthResponse {
+  token: string       // アプリが発行する JWT
+  is_registered: boolean // 初期登録（LIFFフォーム）完了済みか
 }
