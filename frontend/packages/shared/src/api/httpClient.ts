@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { AppError } from '../errors/AppError'
 
 const TOKEN_KEY = 'auth_token'
 
@@ -18,19 +19,28 @@ httpClient.interceptors.request.use((config) => {
   return config
 })
 
-// レスポンスインターセプター: エラーメッセージを正規化する
+// レスポンスインターセプター: エラーを AppError に正規化する
 httpClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (axios.isAxiosError(error) && error.response) {
-      // 401 は認証切れ → localStorage をクリアしてログインページへ
-      if (error.response.status === 401) {
-        localStorage.removeItem(TOKEN_KEY)
-        // TODO: ページリロードまたは router.navigate('/login') を呼ぶ
-      }
+      const status = error.response.status
       const message = (error.response.data as { error?: string })?.error ?? error.message
-      return Promise.reject(new Error(message))
+
+      // 401 は認証切れ → localStorage をクリアしてログインページへ
+      if (status === 401) {
+        localStorage.removeItem(TOKEN_KEY)
+        window.location.href = '/'
+      }
+
+      return Promise.reject(new AppError(message, { status }))
     }
-    return Promise.reject(error)
+    // ネットワーク断など response がない場合
+    return Promise.reject(
+      new AppError('ネットワークエラーが発生しました。通信状況を確認してください。', {
+        status: 0,
+        display: 'dialog',
+      }),
+    )
   },
 )
