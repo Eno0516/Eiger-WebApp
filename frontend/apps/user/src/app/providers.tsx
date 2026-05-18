@@ -3,7 +3,6 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 import { useEffect, useRef, useState, type ReactNode } from 'react'
-import { GoogleOAuthProvider } from '@react-oauth/google'
 import { AuthProvider } from '@eiger/shared/hooks'
 import { ErrorNotificationProvider, useErrorNotification } from '@eiger/shared/errors'
 
@@ -52,15 +51,13 @@ function QueryClientSetup({ children }: { children: ReactNode }) {
 
 export function Providers({ children }: { children: ReactNode }) {
   return (
-    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-      <AuthProvider>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <ErrorNotificationProvider>
-            <QueryClientSetup>{children}</QueryClientSetup>
-          </ErrorNotificationProvider>
-        </ThemeProvider>
-      </AuthProvider>
-    </GoogleOAuthProvider>
+    <AuthProvider>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <ErrorNotificationProvider>
+          <QueryClientSetup>{children}</QueryClientSetup>
+        </ErrorNotificationProvider>
+      </ThemeProvider>
+    </AuthProvider>
   )
 }
