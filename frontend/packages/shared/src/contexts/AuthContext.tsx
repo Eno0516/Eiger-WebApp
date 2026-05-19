@@ -3,10 +3,15 @@ import type { AuthUser } from '../types/auth.types'
 
 // JWT の payload を base64 デコードして AuthUser を取得するヘルパー
 function parseToken(token: string): AuthUser | null {
-  // TODO: token.split('.')[1] を atob でデコードして JSON.parse する
-  // TODO: { user_id, email, role } を AuthUser にマップして返す
-  // TODO: デコード失敗時は null を返す
-  return null
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]))
+    return {
+      userId: payload.user_id,
+      isSystemAdmin: payload.is_system_admin,
+    }
+  } catch {
+    return null
+  }
 }
 
 const TOKEN_KEY = 'auth_token'
