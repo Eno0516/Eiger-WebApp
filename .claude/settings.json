@@ -10,7 +10,8 @@
       "Bash(xargs grep *)"
     ],
     "additionalDirectories": [
-      "c:\\Users\\enoro\\Eiger-WebApp\\document\\api\\paths\\auth"
+      "c:\\Users\\enoro\\Eiger-WebApp\\document\\api\\paths\\auth",
+      "c:\\Users\\enoro\\Eiger-WebApp\\frontend\\apps\\user\\src\\features\\auth\\components"
     ]
   }
 }
