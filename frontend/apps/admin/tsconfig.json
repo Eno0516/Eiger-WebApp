@@ -20,8 +20,8 @@
       "@app/*":      ["app/*"],
       "@features/*": ["features/*"],
       "@pages/*":    ["pages/*"]
-    }
+    },
+    "types": ["vitest/globals"]
   },
-  "include": ["src"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": ["src"]
 }
