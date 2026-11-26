@@ -16,9 +16,9 @@ const (
 	StatusCancelled ReservationStatus = "cancelled" // キャンセル済み
 )
 
-// occupiesCar は、その予約が車の時間帯を押さえているかを返す。
+// OccupiesCar は、その予約が車の時間帯を押さえているかを返す。
 // キャンセル済み・返却済みの予約は、時間帯を押さえない。
-func (s ReservationStatus) occupiesCar() bool {
+func (s ReservationStatus) OccupiesCar() bool {
 	return s == StatusReserved || s == StatusInUse
 }
 
@@ -55,7 +55,7 @@ func NewReservation(
 		return Reservation{}, domain.ErrPastPeriod
 	}
 	for _, e := range existing {
-		if e.CarID == car.ID && e.Status.occupiesCar() && e.Period.Overlaps(period) {
+		if e.CarID == car.ID && e.Status.OccupiesCar() && e.Period.Overlaps(period) {
 			return Reservation{}, domain.ErrReservationConflict
 		}
 	}

@@ -10,6 +10,7 @@ var (
 	ErrPastPeriod          = errors.New("過去の時刻からは予約できません")
 	ErrCarUnavailable      = errors.New("この車は現在利用できません")
 	ErrReservationConflict = errors.New("その時間帯はすでに予約されています")
+	ErrNotMember           = errors.New("このサークルのメンバーではありません")
 	ErrNotOwner            = errors.New("予約した本人のみ操作できます")
 	ErrInvalidStatus       = errors.New("現在の状態ではこの操作はできません")
 	ErrInvalidDistance     = errors.New("走行距離が不正です")
